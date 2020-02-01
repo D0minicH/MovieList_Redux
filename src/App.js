@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import _ from 'lodash'
 import './css/style.css'
 
@@ -28,14 +28,23 @@ const App = () => {
     // Selektor für den filterTerm, damit wir den aktuellen Zustand mitbekommen
     const filterTerm = useSelector(state => state.filterTerm, _.isEqual)
 
-    /** wurde in Filter-Klasse verschoben, um den call zu verhindern
-     * const dispatch = useDispatch()
-     * // Im Callback die Action erstellen und mit dem Dispatcher zum Store senden
-     * const updateFilterTerm = term => dispatch({ type: 'UPDATE_FILTER_TERM', filterTerm: term })
-     */
+    const dispatch = useDispatch()
+
+    const data = () => {
+        dispatch(
+            async dispatch => {
+                dispatch({ type: 'LOADING_MOVIES' })
+                const response = await fetch('https://softwarelab.ch/api/public/v1/movies')
+                const movies = await response.json()
+                dispatch({ type: 'MOVIES_LOADED', movies: movies })
+            }
+        )
+    }
+
+    useEffect(data, []) // wie componentDidMount
 
     return <main>
-        <Filter term={ filterTerm } updateFilterTerm={ updateFilterTerm } />
+        <Filter term={ filterTerm } />
         { _.map(filter(movies, filterTerm), movie => <Movie key={ movie.rank } data={ movie } />) }
     </main>
 }

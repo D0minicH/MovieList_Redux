@@ -1,5 +1,5 @@
 import React from 'react'
-import _ from 'lodash'
+import { useDispatch } from 'react-redux'
 
 /**
  * Die Filter Komponente.
